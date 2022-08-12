@@ -1,0 +1,117 @@
+name: Version Tag Docker Image
+description: |
+  Create major, minor and patch sematic version tags of an existing Docker image.
+
+  The existing Docker image must have the commit's SHA as tag, and a corresponding
+  merged pull request created by release-please. Otherwise the SHA ref can't be looked up.
+inputs:
+  version:
+    description: "Manually provided semantic version (e.g: 0.3.4)"
+    required: true
+  docker-registry:
+    description: Docker registry
+    required: true
+  docker-username:
+    description: Docker username
+    required: true
+  docker-password:
+    description: Docker password
+    required: true
+  docker-image:
+    description: Name of the docker image
+    required: true
+  add-pr-label:
+    description: 'Add label `"version tagged: $inputs.docker-registry"` to the relevant release-please created pull request'
+    required: true
+    default: "true"
+  pr-label-color:
+    description: PR label color
+    required: true
+    default: "#0db7ed"
+
+outputs:
+  version:
+    description: The version that was passed in to the action
+    value: ${{ inputs.version }}
+  commit_sha:
+    description: Commit SHA
+    value: ${{ steps.release_pr.outputs.commit_sha }}
+
+runs:
+  using: composite
+  # permissions:
+  #   contents: read
+  #   pull-requests: write
+  #   # TODO: Remove `issues: read` and `repository-projects: read` once
+  #   #       https://github.com/cli/cli/pull/4876 has been resolved.
+  #   #       More info here:
+  #   #       https://github.com/cli/cli/discussions/5307#discussioncomment-2358577
+  #   issues: read
+  #   repository-projects: read
+  steps:
+    - uses: actions/checkout@v3
+
+    - uses: apexskier/github-semver-parse@v1
+      id: semver
+      with:
+        version: ${{ inputs.version }}
+
+    - name: Get release pull request info
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        VERSION: ${{ inputs.version }}
+      id: release_pr
+      # NOTE: Running `gh pr list --limit 1 > /dev/null` to check for permission issues
+      run: |
+        gh pr list --limit 1 > /dev/null
+        PR_NUMBER=$(gh pr list \
+          --search "in:title chore(main): release $VERSION" \
+          --state merged \
+          --json number \
+          --jq '.[0].number')
+        [[ -z $PR_NUMBER ]] \
+          && echo "Failed to find corresponding release-please created pull request for version ${{ inputs.version }}" \
+          && exit 1
+        echo ::set-output name=number::$PR_NUMBER
+
+        COMMIT_SHA=$(gh pr view $PR_NUMBER --json mergeCommit --jq '.mergeCommit.oid')
+        echo ::set-output name=commit_sha::$COMMIT_SHA
+
+    - name: Log in to Docker registry
+      uses: docker/login-action@v2.0.0
+      with:
+        registry: ${{ inputs.docker-registry }}
+        username: ${{ inputs.docker-username }}
+        password: ${{ inputs.docker-password }}
+
+    - name: Push Docker version tags
+      uses: akhilerm/tag-push-action@v2.0.0
+      env:
+        DOCKER_IMAGE: ${{ inputs.docker-registry }}/${{ inputs.docker-image }}
+      with:
+        src: ${{ env.DOCKER_IMAGE }}:${{ steps.release_pr.outputs.commit_sha }}
+        dst: |
+          ${{ env.DOCKER_IMAGE }}:${{ inputs.version }}
+          ${{ env.DOCKER_IMAGE }}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
+          ${{ env.DOCKER_IMAGE }}:${{ steps.semver.outputs.major }}
+
+    - name: Add label and comment to pull request regarding the new Docker tags
+      shell: bash
+      if: ${{ inputs.add-pr-label == 'true' }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        LABEL: "version tagged: ${{ inputs.docker-registry }}"
+        LABEL_COLOR: "${{ inputs.pr-label-color }}"
+        DOCKER_IMAGE: ${{ inputs.docker-registry }}/${{ inputs.docker-image }}
+      run: |
+        gh label create "$LABEL" \
+          --force \
+          --color "$LABEL_COLOR" \
+          --description "Version tags have been pushed to this Docker repository"
+        gh pr edit "${{ steps.release_pr.outputs.number }}" --add-label "$LABEL"
+        gh pr comment "${{ steps.release_pr.outputs.number }}" \
+        --body "The following Docker tags have been created:
+        * $DOCKER_IMAGE:${{ inputs.version }}
+        * $DOCKER_IMAGE:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
+        * $DOCKER_IMAGE:${{ steps.semver.outputs.major }}"
