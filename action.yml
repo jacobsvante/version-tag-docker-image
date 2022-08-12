@@ -21,7 +21,7 @@ inputs:
     description: Name of the docker image
     required: true
   add-pr-label:
-    description: 'Add label `"version tagged: ${{ inputs.docker-registry }}"` to the relevant release-please created pull request'
+    description: 'Add label `"version tagged: $inputs.docker-registry"` to the relevant release-please created pull request'
     required: true
     default: "true"
   pr-label-color:
