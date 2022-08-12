@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.2.0...v0.2.1) (2022-08-12)
+
+
+### Bug Fixes
+
+* Check that commit sha can be retrieved ([47568e7](https://github.com/jacobsvante/version-tag-docker-image/commit/47568e76adf917cdefb91d39c568cb8f0e432d71))
+
 ## [0.2.0](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.1.0...v0.2.0) (2022-08-12)
 
 
