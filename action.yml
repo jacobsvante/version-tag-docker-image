@@ -62,7 +62,6 @@ runs:
         GITHUB_TOKEN: ${{ github.token }}
         VERSION: ${{ inputs.version }}
       id: release_pr
-      # NOTE: Running `gh pr list --limit 1 > /dev/null` to check for permission issues
       run: |
 
         gh pr list \
@@ -79,8 +78,12 @@ runs:
         NUMBER=$(jq -r .number pr.json)
         COMMIT_SHA=$(jq -r .mergeCommit.oid pr.json)
 
-        if [[ -z "$NUMBER" ]] || [[ -z "$COMMIT_SHA" ]]; then
-          echo "Failed to find corresponding release-please created pull request for version ${{ inputs.version }}" \
+        if [[ -z "$NUMBER" ]]; then
+          echo "::error Failed to find corresponding release-please created pull request for version ${{ inputs.version }}" \
+          exit 1
+        fi
+        if [[ -z "$COMMIT_SHA" ]]; then
+          echo "::error Failed to find mergeCommit.oid / SHA for pull request $NUMBER" \
           exit 1
         fi
 
