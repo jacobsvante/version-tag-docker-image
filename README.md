@@ -10,15 +10,15 @@ merged pull request created by release-please. Otherwise the SHA ref can't be lo
 
 ## Inputs
 
-| parameter       | description                                                                                               | required | default |
-| --------------- | --------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| version         | Manually provided semantic version (e.g: 0.3.4)                                                           | `true`   |         |
-| docker-registry | Docker registry                                                                                           | `true`   |         |
-| docker-username | Docker username                                                                                           | `true`   |         |
-| docker-password | Docker password                                                                                           | `true`   |         |
-| docker-image    | Name of the docker image                                                                                  | `true`   |         |
-| add-pr-label    | Add label `"version tagged: $inputs.docker-registry"` to the relevant release-please created pull request | `true`   | true    |
-| pr-label-color  | PR label color                                                                                            | `true`   | #0db7ed |
+| parameter      | description                                                                                        | required | default |
+| -------------- | -------------------------------------------------------------------------------------------------- | -------- | ------- |
+| image          | Name of the docker image (e.g. `"my-namespace/my-image"`)                                          | `true`   |         |
+| version        | Manually provided semantic version (e.g: 0.3.4)                                                    | `true`   |         |
+| registry       | Docker registry                                                                                    | `true`   |         |
+| username       | Docker username                                                                                    | `true`   |         |
+| password       | Docker password                                                                                    | `true`   |         |
+| add-pr-label   | Add label `"version tagged: $inputs.registry"` to the relevant release-please created pull request | `true`   | true    |
+| pr-label-color | PR label color                                                                                     | `true`   | #0db7ed |
 
 <!-- action-docs-inputs -->
 
