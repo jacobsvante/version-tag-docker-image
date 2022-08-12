@@ -1,13 +1,10 @@
-<!-- action-docs-description -->
-
 ## Description
 
-Create major, minor and patch sematic version tags of an existing Docker image.
+Create major, minor and patch sematic version tags of an existing Docker image,
+utilizing info from release-please pull requests.
 
 The existing Docker image must have the commit's SHA as tag, and a corresponding
 merged pull request created by release-please. Otherwise the SHA ref can't be looked up.
-
-<!-- action-docs-description -->
 
 <!-- action-docs-inputs -->
 

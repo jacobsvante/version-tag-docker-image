@@ -1,9 +1,9 @@
 name: Version Tag Docker Image
-description: |
-  Create major, minor and patch sematic version tags of an existing Docker image.
+description: Create semver tags of an existing Docker image (e.g. v0, v0.1, v0.1.2), utilizing info from release-please pull requests.
+branding:
+  icon: arrow-up-right
+  color: blue
 
-  The existing Docker image must have the commit's SHA as tag, and a corresponding
-  merged pull request created by release-please. Otherwise the SHA ref can't be looked up.
 inputs:
   version:
     description: "Manually provided semantic version (e.g: 0.3.4)"
