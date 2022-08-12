@@ -15,22 +15,70 @@ jobs:
       - uses: actions/setup-python@v3
       - uses: pre-commit/action@v3.0.0
 
-  test:
+  latest-release:
+    name: Retrieve latest release info
     runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.result.outputs.sha }}
+      version: ${{ steps.result.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get info on latest merged release
+        id: result
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr list \
+            --search "in:title chore(main): release" \
+            --limit 1 \
+            --state merged \
+            --json number,title,mergeCommit \
+            --jq '.[0]' > pr.json
+          NUMBER=$(jq -r .number pr.json)
+          echo ::set-output name=number::$NUMBER
+          [[ -z $NUMBER ]] && echo "Failed to find any release PR" && exit 1
+          SHA=$(jq -r .mergeCommit.oid pr.json)
+          echo ::set-output name=sha::$SHA
+          VERSION=$(jq -r .title pr.json | sed 's/chore(main): release //')
+          echo ::set-output name=version::$VERSION
+
+  push-test-image:
+    name: Push test Docker image
+    runs-on: ubuntu-latest
+    needs: [latest-release]
+    steps:
+      - name: Log in to Docker registry
+        uses: docker/login-action@v2.0.0
+        with:
+          registry: docker.io
+          username: integrationtester
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        env:
+          TAG: ${{ needs.latest-release.outputs.sha }}
+        with:
+          push: true
+          file: test.Dockerfile
+          tags: integrationtester/version-tag-docker-image-action-tester:${{ env.TAG }}
+
+  test:
     name: Test action
+    runs-on: ubuntu-latest
+    needs: [push-test-image, latest-release]
     env:
       DEBUG: "true"
       DRY_RUN: "true"
     steps:
       - uses: actions/checkout@v3
-      # - name: Run action
-      #   uses: ./
-      #   with:
-      #     version: "0.1.2"
-      #     docker-registry: jacobsvante
-      #     docker-username: integrationtester
-      #     docker-password: ${{ secrets.DOCKER_PASSWORD }}
-      #     docker-image: version-tag-docker-image-action-tester
+      - name: Run action
+        uses: ./
+        with:
+          version: "${{ needs.latest-release.outputs.version }}"
+          docker-registry: docker.io
+          docker-username: integrationtester
+          docker-password: ${{ secrets.DOCKER_PASSWORD }}
+          docker-image: integrationtester/version-tag-docker-image-action-tester
 
   release-please:
     runs-on: ubuntu-latest
