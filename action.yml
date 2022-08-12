@@ -64,19 +64,39 @@ runs:
       id: release_pr
       # NOTE: Running `gh pr list --limit 1 > /dev/null` to check for permission issues
       run: |
-        gh pr list --limit 1 > /dev/null
-        PR_NUMBER=$(gh pr list \
-          --search "in:title chore(main): release $VERSION" \
-          --state merged \
-          --json number \
-          --jq '.[0].number')
-        [[ -z $PR_NUMBER ]] \
-          && echo "Failed to find corresponding release-please created pull request for version ${{ inputs.version }}" \
-          && exit 1
-        echo ::set-output name=number::$PR_NUMBER
 
-        COMMIT_SHA=$(gh pr view $PR_NUMBER --json mergeCommit --jq '.mergeCommit.oid')
+        gh pr list \
+          --search "in:title chore(main): release $VERSION" \
+          --limit 1 \
+          --state merged \
+          --json number,mergeCommit \
+          --jq '.[0]' > pr.json
+
+        if [[ $DEBUG == 'true' ]]; then
+          cat pr.json
+        fi
+
+        NUMBER=$(jq -r .number pr.json)
+        COMMIT_SHA=$(jq -r .mergeCommit.oid pr.json)
+
+        if [[ -z "$NUMBER" ]] || [[ -z "$COMMIT_SHA" ]]; then
+          echo "Failed to find corresponding release-please created pull request for version ${{ inputs.version }}" \
+          exit 1
+        fi
+
+        echo ::set-output name=number::$NUMBER
         echo ::set-output name=commit_sha::$COMMIT_SHA
+
+    - name: Print context
+      if: ${{ env.DEBUG == 'true' }}
+      shell: bash
+      run: |
+        echo 'github: ${{ toJSON(github) }}'
+        echo 'job: ${{ toJSON(job) }}'
+        echo 'steps: ${{ toJSON(steps) }}'
+        echo 'runner: ${{ toJSON(runner) }}'
+        echo 'strategy: ${{ toJSON(strategy) }}'
+        echo 'matrix: ${{ toJSON(matrix) }}'
 
     - name: Log in to Docker registry
       uses: docker/login-action@v2.0.0
