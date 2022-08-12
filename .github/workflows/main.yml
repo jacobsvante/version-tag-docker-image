@@ -74,11 +74,11 @@ jobs:
       - name: Run action
         uses: ./
         with:
+          image: integrationtester/version-tag-docker-image-action-tester
           version: "${{ needs.latest-release.outputs.version }}"
-          docker-registry: docker.io
-          docker-username: integrationtester
-          docker-password: ${{ secrets.DOCKER_PASSWORD }}
-          docker-image: integrationtester/version-tag-docker-image-action-tester
+          registry: docker.io
+          username: integrationtester
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
   release-please:
     runs-on: ubuntu-latest

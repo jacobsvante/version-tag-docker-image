@@ -1,27 +1,27 @@
 name: Version Tag Docker Image
-description: Create semver tags of an existing Docker image (e.g. v0, v0.1, v0.1.2), utilizing info from release-please pull requests.
+description: Create semver tags for an existing Docker image (e.g. v0, v0.1, v0.1.2), utilizing info from release-please pull requests.
 branding:
   icon: arrow-up-right
   color: blue
 
 inputs:
+  image:
+    description: Name of the docker image (e.g. `"my-namespace/my-image"`)
+    required: true
   version:
     description: "Manually provided semantic version (e.g: 0.3.4)"
     required: true
-  docker-registry:
+  registry:
     description: Docker registry
     required: true
-  docker-username:
+  username:
     description: Docker username
     required: true
-  docker-password:
+  password:
     description: Docker password
     required: true
-  docker-image:
-    description: Name of the docker image
-    required: true
   add-pr-label:
-    description: 'Add label `"version tagged: $inputs.docker-registry"` to the relevant release-please created pull request'
+    description: 'Add label `"version tagged: $inputs.registry"` to the relevant release-please created pull request'
     required: true
     default: "true"
   pr-label-color:
@@ -81,14 +81,14 @@ runs:
     - name: Log in to Docker registry
       uses: docker/login-action@v2.0.0
       with:
-        registry: ${{ inputs.docker-registry }}
-        username: ${{ inputs.docker-username }}
-        password: ${{ inputs.docker-password }}
+        registry: ${{ inputs.registry }}
+        username: ${{ inputs.username }}
+        password: ${{ inputs.password }}
 
     - name: Push Docker version tags
       uses: akhilerm/tag-push-action@v2.0.0
       env:
-        DOCKER_IMAGE: ${{ inputs.docker-registry }}/${{ inputs.docker-image }}
+        DOCKER_IMAGE: ${{ inputs.registry }}/${{ inputs.image }}
       with:
         src: ${{ env.DOCKER_IMAGE }}:${{ steps.release_pr.outputs.commit_sha }}
         dst: |
@@ -101,9 +101,9 @@ runs:
       if: ${{ inputs.add-pr-label == 'true' }}
       env:
         GITHUB_TOKEN: ${{ github.token }}
-        LABEL: "version tagged: ${{ inputs.docker-registry }}"
+        LABEL: "version tagged: ${{ inputs.registry }}"
         LABEL_COLOR: "${{ inputs.pr-label-color }}"
-        DOCKER_IMAGE: ${{ inputs.docker-registry }}/${{ inputs.docker-image }}
+        DOCKER_IMAGE: ${{ inputs.registry }}/${{ inputs.image }}
       run: |
         gh label create "$LABEL" \
           --force \
