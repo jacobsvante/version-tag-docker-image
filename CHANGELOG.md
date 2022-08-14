@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.2.2...v0.3.0) (2022-08-14)
+
+
+### Features
+
+* Add pr_number to outputs ([be518f6](https://github.com/jacobsvante/version-tag-docker-image/commit/be518f66916a88eb58215aad2c9b47561b9201be))
+
 ## [0.2.2](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.2.1...v0.2.2) (2022-08-14)
 
 
