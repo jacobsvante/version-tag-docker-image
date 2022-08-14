@@ -34,8 +34,11 @@ outputs:
     description: The version that was passed in to the action
     value: ${{ inputs.version }}
   commit_sha:
-    description: Commit SHA
+    description: Commit SHA that correlates to this version
     value: ${{ steps.release_pr.outputs.commit_sha }}
+  pr_number:
+    description: PR number that correlates to this version
+    value: ${{ steps.release_pr.outputs.number }}
 
 runs:
   using: composite

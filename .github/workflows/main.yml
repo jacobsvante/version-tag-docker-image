@@ -36,7 +36,7 @@ jobs:
             --jq '.[0]' > pr.json
           NUMBER=$(jq -r .number pr.json)
           echo ::set-output name=number::$NUMBER
-          [[ -z $NUMBER ]] && echo "Failed to find any release PR" && exit 1
+          [[ -z $NUMBER ]] && echo "::error Failed to find any release PR" && exit 1
           SHA=$(jq -r .mergeCommit.oid pr.json)
           echo ::set-output name=sha::$SHA
           VERSION=$(jq -r .title pr.json | sed 's/chore(main): release //')
@@ -73,12 +73,34 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run action
         uses: ./
+        id: action
         with:
           image: integrationtester/version-tag-docker-image-action-tester
           version: "${{ needs.latest-release.outputs.version }}"
           registry: docker.io
           username: integrationtester
           password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Ensure that version output is as expected
+        shell: bash
+        run: |
+          if [[ ${{ steps.action.outputs.version }} != ${{ needs.latest-release.outputs.version }} ]]; then
+            echo "::error Aciton output version not the expected value"
+            exit 1
+          fi
+      - name: Ensure that commit_sha output is not empty
+        shell: bash
+        run: |
+          if [[ -z ${{ steps.action.outputs.commit_sha }} ]]; then
+            echo "::error commit_sha output value unexpectedly empty"
+            exit 1
+          fi
+      - name: Ensure that pr_number output is not empty
+        shell: bash
+        run: |
+          if [[ -z ${{ steps.action.outputs.pr_number }} ]]; then
+            echo "::error pr_number output value unexpectedly empty"
+            exit 1
+          fi
 
   release-please:
     runs-on: ubuntu-latest
