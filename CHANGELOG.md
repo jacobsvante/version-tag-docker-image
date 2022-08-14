@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.2.1...v0.2.2) (2022-08-14)
+
+
+### Bug Fixes
+
+* Separate errors for missing PR number and missing SHA ([b591adf](https://github.com/jacobsvante/version-tag-docker-image/commit/b591adf6fd1c97eade4aca003d726b891186da8e))
+
 ## [0.2.1](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.2.0...v0.2.1) (2022-08-12)
 
 
