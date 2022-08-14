@@ -29,7 +29,8 @@ merged pull request created by release-please. Otherwise the SHA ref can't be lo
 | parameter  | description                                  |
 | ---------- | -------------------------------------------- |
 | version    | The version that was passed in to the action |
-| commit_sha | Commit SHA                                   |
+| commit_sha | Commit SHA that correlates to this version   |
+| pr_number  | PR number that correlates to this version    |
 
 <!-- action-docs-outputs -->
 
