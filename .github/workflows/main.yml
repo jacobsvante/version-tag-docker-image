@@ -83,22 +83,22 @@ jobs:
       - name: Ensure that version output is as expected
         shell: bash
         run: |
-          if [[ ${{ steps.action.outputs.version }} != ${{ needs.latest-release.outputs.version }} ]]; then
+          if [[ "${{ steps.action.outputs.version }}" != "${{ needs.latest-release.outputs.version }}" ]]; then
             echo "::error Aciton output version not the expected value"
             exit 1
           fi
-      - name: Ensure that commit_sha output is not empty
+      - name: Ensure that commit-sha output is not empty
         shell: bash
         run: |
-          if [[ -z ${{ steps.action.outputs.commit_sha }} ]]; then
-            echo "::error commit_sha output value unexpectedly empty"
+          if [[ -z ${{ steps.action.outputs.commit-sha }} ]]; then
+            echo "::error commit-sha output value unexpectedly empty"
             exit 1
           fi
-      - name: Ensure that pr_number output is not empty
+      - name: Ensure that pr-number output is not empty
         shell: bash
         run: |
-          if [[ -z ${{ steps.action.outputs.pr_number }} ]]; then
-            echo "::error pr_number output value unexpectedly empty"
+          if [[ -z ${{ steps.action.outputs.pr-number }} ]]; then
+            echo "::error pr-number output value unexpectedly empty"
             exit 1
           fi
 

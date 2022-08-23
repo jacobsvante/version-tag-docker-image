@@ -33,12 +33,12 @@ outputs:
   version:
     description: The version that was passed in to the action
     value: ${{ inputs.version }}
-  commit_sha:
+  commit-sha:
     description: Commit SHA that correlates to this version
-    value: ${{ steps.release_pr.outputs.commit_sha }}
-  pr_number:
+    value: ${{ steps.release_pr.outputs.commit-sha }}
+  pr-number:
     description: PR number that correlates to this version
-    value: ${{ steps.release_pr.outputs.number }}
+    value: ${{ steps.release_pr.outputs.pr-number }}
 
 runs:
   using: composite
@@ -78,20 +78,20 @@ runs:
           cat pr.json
         fi
 
-        NUMBER=$(jq -r .number pr.json)
+        PR_NUMBER=$(jq -r .number pr.json)
         COMMIT_SHA=$(jq -r .mergeCommit.oid pr.json)
 
-        if [[ -z "$NUMBER" ]]; then
+        if [[ -z "$PR_NUMBER" ]]; then
           echo "::error Failed to find corresponding release-please created pull request for version ${{ inputs.version }}" \
           exit 1
         fi
         if [[ -z "$COMMIT_SHA" ]]; then
-          echo "::error Failed to find mergeCommit.oid / SHA for pull request $NUMBER" \
+          echo "::error Failed to find mergeCommit.oid / SHA for pull request $PR_NUMBER" \
           exit 1
         fi
 
-        echo ::set-output name=number::$NUMBER
-        echo ::set-output name=commit_sha::$COMMIT_SHA
+        echo ::set-output name=pr-number::$PR_NUMBER
+        echo ::set-output name=commit-sha::$COMMIT_SHA
 
     - name: Print context
       if: ${{ env.DEBUG == 'true' }}
@@ -116,7 +116,7 @@ runs:
       env:
         DOCKER_IMAGE: ${{ inputs.registry }}/${{ inputs.image }}
       with:
-        src: ${{ env.DOCKER_IMAGE }}:${{ steps.release_pr.outputs.commit_sha }}
+        src: ${{ env.DOCKER_IMAGE }}:${{ steps.release_pr.outputs.commit-sha }}
         dst: |
           ${{ env.DOCKER_IMAGE }}:${{ inputs.version }}
           ${{ env.DOCKER_IMAGE }}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
@@ -135,8 +135,8 @@ runs:
           --force \
           --color "$LABEL_COLOR" \
           --description "Version tags have been pushed to this Docker repository"
-        gh pr edit "${{ steps.release_pr.outputs.number }}" --add-label "$LABEL"
-        gh pr comment "${{ steps.release_pr.outputs.number }}" \
+        gh pr edit "${{ steps.release_pr.outputs.pr-number }}" --add-label "$LABEL"
+        gh pr comment "${{ steps.release_pr.outputs.pr-number }}" \
         --body "The following Docker tags have been created:
         * $DOCKER_IMAGE:${{ inputs.version }}
         * $DOCKER_IMAGE:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
