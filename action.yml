@@ -28,6 +28,10 @@ inputs:
     description: PR label color
     required: true
     default: "#0db7ed"
+  token:
+    description: Token for interacting with the Github API. Default to using the special GITHUB_TOKEN. Because of limitations imposed by GitHub, this must be set if you want the setting of the PR label to trigger an event.
+    required: true
+    default: ${{ github.token }}
 
 outputs:
   version:
@@ -62,7 +66,7 @@ runs:
     - name: Get release pull request info
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_TOKEN: ${{ inputs.token }}
         VERSION: ${{ inputs.version }}
       id: release_pr
       run: |
@@ -126,7 +130,7 @@ runs:
       shell: bash
       if: ${{ inputs.add-pr-label == 'true' }}
       env:
-        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_TOKEN: ${{ inputs.token }}
         LABEL: "version tagged: ${{ inputs.registry }}"
         LABEL_COLOR: "${{ inputs.pr-label-color }}"
         DOCKER_IMAGE: ${{ inputs.registry }}/${{ inputs.image }}
