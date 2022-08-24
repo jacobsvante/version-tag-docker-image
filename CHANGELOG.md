@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.0](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.3.0...v0.4.0) (2022-08-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* Use dashed output variables to follow input naming convention
+
+### Features
+
+* Ability to override GITHUB_TOKEN ([79aaf9c](https://github.com/jacobsvante/version-tag-docker-image/commit/79aaf9c275333a60cf128e8f52f63cc51817f30b))
+
+
+### Bug Fixes
+
+* Use dashed output variables to follow input naming convention ([8247264](https://github.com/jacobsvante/version-tag-docker-image/commit/8247264158f432f3639b21433fc5c7d46fa38825))
+
 ## [0.3.0](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.2.2...v0.3.0) (2022-08-14)
 
 
