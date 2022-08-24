@@ -10,15 +10,16 @@ merged pull request created by release-please. Otherwise the SHA ref can't be lo
 
 ## Inputs
 
-| parameter      | description                                                                                        | required | default |
-| -------------- | -------------------------------------------------------------------------------------------------- | -------- | ------- |
-| image          | Name of the docker image (e.g. `"my-namespace/my-image"`)                                          | `true`   |         |
-| version        | Manually provided semantic version (e.g: 0.3.4)                                                    | `true`   |         |
-| registry       | Docker registry                                                                                    | `true`   |         |
-| username       | Docker username                                                                                    | `true`   |         |
-| password       | Docker password                                                                                    | `true`   |         |
-| add-pr-label   | Add label `"version tagged: $inputs.registry"` to the relevant release-please created pull request | `true`   | true    |
-| pr-label-color | PR label color                                                                                     | `true`   | #0db7ed |
+| parameter      | description                                                                                                                                                                                                   | required | default             |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------- |
+| image          | Name of the docker image (e.g. `"my-namespace/my-image"`)                                                                                                                                                     | `true`   |                     |
+| version        | Manually provided semantic version (e.g: 0.3.4)                                                                                                                                                               | `true`   |                     |
+| registry       | Docker registry                                                                                                                                                                                               | `true`   |                     |
+| username       | Docker username                                                                                                                                                                                               | `true`   |                     |
+| password       | Docker password                                                                                                                                                                                               | `true`   |                     |
+| add-pr-label   | Add label `"version tagged: $inputs.registry"` to the relevant release-please created pull request                                                                                                            | `true`   | true                |
+| pr-label-color | PR label color                                                                                                                                                                                                | `true`   | #0db7ed             |
+| token          | Token for interacting with the Github API. Default to using the special GITHUB_TOKEN. Because of limitations imposed by GitHub, this must be set if you want the setting of the PR label to trigger an event. | `true`   | ${{ github.token }} |
 
 <!-- action-docs-inputs -->
 
@@ -29,8 +30,8 @@ merged pull request created by release-please. Otherwise the SHA ref can't be lo
 | parameter  | description                                  |
 | ---------- | -------------------------------------------- |
 | version    | The version that was passed in to the action |
-| commit_sha | Commit SHA that correlates to this version   |
-| pr_number  | PR number that correlates to this version    |
+| commit-sha | Commit SHA that correlates to this version   |
+| pr-number  | PR number that correlates to this version    |
 
 <!-- action-docs-outputs -->
 
