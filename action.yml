@@ -117,7 +117,7 @@ runs:
         password: ${{ inputs.password }}
 
     - name: Push Docker version tags
-      uses: akhilerm/tag-push-action@v2.0.0
+      uses: akhilerm/tag-push-action@v2.1.0
       env:
         DOCKER_IMAGE: ${{ inputs.registry }}/${{ inputs.image }}
       with:
