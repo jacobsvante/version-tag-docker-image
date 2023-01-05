@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.4.0...v0.5.0) (2023-01-05)
+
+
+### Features
+
+* Default to using docker.io as registry ([6b44813](https://github.com/jacobsvante/version-tag-docker-image/commit/6b4481395f155c1b8b179e7f7a5c01f9116582b1))
+
+
+### Bug Fixes
+
+* Deprecated use of setting output variables ([02459f8](https://github.com/jacobsvante/version-tag-docker-image/commit/02459f861df4f3e426f1671133741423a06b3537))
+* Use jacobsvante/github-semver-parse ([70daaff](https://github.com/jacobsvante/version-tag-docker-image/commit/70daaffa500546c3e70e3c92e8f12faef27cb524))
+* Use latest docker/login-action ([65820cd](https://github.com/jacobsvante/version-tag-docker-image/commit/65820cd2415b18b587c48c8fdbf79010d5f1c95c))
+
 ## [0.4.0](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.3.0...v0.4.0) (2022-08-24)
 
 
