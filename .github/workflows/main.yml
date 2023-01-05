@@ -35,12 +35,12 @@ jobs:
             --json number,title,mergeCommit \
             --jq '.[0]' > pr.json
           NUMBER=$(jq -r .number pr.json)
-          echo ::set-output name=number::$NUMBER
+          echo number=$NUMBER >> $GITHUB_OUTPUT
           [[ -z $NUMBER ]] && echo "::error Failed to find any release PR" && exit 1
           SHA=$(jq -r .mergeCommit.oid pr.json)
-          echo ::set-output name=sha::$SHA
+          echo sha=$SHA >> $GITHUB_OUTPUT
           VERSION=$(jq -r .title pr.json | sed 's/chore(main): release //')
-          echo ::set-output name=version::$VERSION
+          echo version=$VERSION >> $GITHUB_OUTPUT
 
   push-test-image:
     name: Push test Docker image

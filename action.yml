@@ -94,8 +94,8 @@ runs:
           exit 1
         fi
 
-        echo ::set-output name=pr-number::$PR_NUMBER
-        echo ::set-output name=commit-sha::$COMMIT_SHA
+        echo pr-number=$PR_NUMBER >> $GITHUB_OUTPUT
+        echo commit-sha=$COMMIT_SHA >> $GITHUB_OUTPUT
 
     - name: Print context
       if: ${{ env.DEBUG == 'true' }}
@@ -109,7 +109,7 @@ runs:
         echo 'matrix: ${{ toJSON(matrix) }}'
 
     - name: Log in to Docker registry
-      uses: docker/login-action@v2.0.0
+      uses: docker/login-action@v2.1.0
       with:
         registry: ${{ inputs.registry }}
         username: ${{ inputs.username }}
