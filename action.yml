@@ -59,7 +59,7 @@ runs:
   steps:
     - uses: actions/checkout@v3
 
-    - uses: apexskier/github-semver-parse@v1
+    - uses: jacobsvante/github-semver-parse@v1
       id: semver
       with:
         version: ${{ inputs.version }}
