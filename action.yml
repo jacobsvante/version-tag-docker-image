@@ -14,6 +14,7 @@ inputs:
   registry:
     description: Docker registry
     required: true
+    default: "docker.io"
   username:
     description: Docker username
     required: true
