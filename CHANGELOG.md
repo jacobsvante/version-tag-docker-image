@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.5.0...v0.5.1) (2023-01-05)
+
+
+### Bug Fixes
+
+* Update to akhilerm/tag-push-action@v2.1.0 ([107803f](https://github.com/jacobsvante/version-tag-docker-image/commit/107803fcbfac5f58e5d48c53411c485b36aa4c07))
+
 ## [0.5.0](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.4.0...v0.5.0) (2023-01-05)
 
 
