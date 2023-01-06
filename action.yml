@@ -21,6 +21,9 @@ inputs:
   password:
     description: Docker password
     required: true
+  push-latest-tag:
+    description: Push `latest` tag to repository, in addition to version tags
+    default: "true"
   add-pr-label:
     description: 'Add label `"version tagged: $inputs.registry"` to the relevant release-please created pull request'
     required: true
@@ -126,6 +129,15 @@ runs:
           ${{ env.DOCKER_IMAGE }}:${{ inputs.version }}
           ${{ env.DOCKER_IMAGE }}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
           ${{ env.DOCKER_IMAGE }}:${{ steps.semver.outputs.major }}
+
+    - name: Push Docker latest tag
+      uses: akhilerm/tag-push-action@v2.1.0
+      if: ${{ inputs.push-latest-tag == 'true' }}
+      env:
+        DOCKER_IMAGE: ${{ inputs.registry }}/${{ inputs.image }}
+      with:
+        src: ${{ env.DOCKER_IMAGE }}:${{ steps.release_pr.outputs.commit-sha }}
+        dst: ${{ env.DOCKER_IMAGE }}:latest
 
     - name: Add label and comment to pull request regarding the new Docker tags
       shell: bash
