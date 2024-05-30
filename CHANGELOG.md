@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.6.0...v0.6.1) (2024-05-30)
+
+
+### Bug Fixes
+
+* Upgrade dependencies to fix deprecation warnings ([866f4ce](https://github.com/jacobsvante/version-tag-docker-image/commit/866f4ce41a01b1a525b2068d274e1d990e2215c4))
+
 ## [0.6.0](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.5.1...v0.6.0) (2023-01-06)
 
 
