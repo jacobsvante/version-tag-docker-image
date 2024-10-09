@@ -83,11 +83,11 @@ runs:
         COMMIT_SHA=$(jq -r .mergeCommit.oid pr.json)
 
         if [[ -z "$PR_NUMBER" ]]; then
-          echo "::error Failed to find corresponding release-please created pull request for version ${{ inputs.version }}" \
+          echo "::error Failed to find corresponding release-please created pull request for version ${{ inputs.version }}"
           exit 1
         fi
         if [[ -z "$COMMIT_SHA" ]]; then
-          echo "::error Failed to find mergeCommit.oid / SHA for pull request $PR_NUMBER" \
+          echo "::error Failed to find mergeCommit.oid / SHA for pull request $PR_NUMBER"
           exit 1
         fi
 
