@@ -76,7 +76,7 @@ runs:
       run: |
 
         gh pr list \
-          --search "in:title chore(main): release $VERSION" \
+          --search "in:title chore release $VERSION" \
           --limit 1 \
           --state merged \
           --json number,mergeCommit \
