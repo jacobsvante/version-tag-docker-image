@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.2](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.6.1...v0.6.2) (2024-10-09)
+
+
+### Bug Fixes
+
+* Don't require branch to be main ([b39b19c](https://github.com/jacobsvante/version-tag-docker-image/commit/b39b19cc3faa513c7a03c20bafb420d1b6328bf6))
+* Support Personal Access Tokens ([12f9823](https://github.com/jacobsvante/version-tag-docker-image/commit/12f9823dc992436fdb20de10b9ce1cedc67505eb))
+
 ## [0.6.1](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.6.0...v0.6.1) (2024-05-30)
 
 
