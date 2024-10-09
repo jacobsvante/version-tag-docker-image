@@ -33,7 +33,8 @@ inputs:
     required: true
     default: "#0db7ed"
   token:
-    description: Token for interacting with the Github API. Default to using the special GITHUB_TOKEN. Because of limitations imposed by GitHub, this must be set if you want the setting of the PR label to trigger an event.
+    description: |
+      Token for interacting with the Github API. Default to using the special GITHUB_TOKEN. Because of limitations imposed by GitHub, this must be set if you want the setting of the PR label to trigger an event. Personal access token only needs `pull-requests: write`.
     required: true
     default: ${{ github.token }}
 
@@ -51,14 +52,7 @@ outputs:
 runs:
   using: composite
   # permissions:
-  #   contents: read
   #   pull-requests: write
-  #   # TODO: Remove `issues: read` and `repository-projects: read` once
-  #   #       https://github.com/cli/cli/pull/4876 has been resolved.
-  #   #       More info here:
-  #   #       https://github.com/cli/cli/discussions/5307#discussioncomment-2358577
-  #   issues: read
-  #   repository-projects: read
   steps:
     - uses: actions/checkout@v4
 
@@ -74,7 +68,6 @@ runs:
         VERSION: ${{ inputs.version }}
       id: release_pr
       run: |
-
         gh pr list \
           --search "in:title chore release $VERSION" \
           --limit 1 \
@@ -143,18 +136,23 @@ runs:
       shell: bash
       if: ${{ inputs.add-pr-label == 'true' }}
       env:
-        GITHUB_TOKEN: ${{ inputs.token }}
+        GITHUB_TOKEN: "${{ inputs.token }}"
         LABEL: "version tagged: ${{ inputs.registry }}"
         LABEL_COLOR: "${{ inputs.pr-label-color }}"
-        DOCKER_IMAGE: ${{ inputs.registry }}/${{ inputs.image }}
+        DOCKER_IMAGE: "${{ inputs.registry }}/${{ inputs.image }}"
       run: |
-        gh label create "$LABEL" \
-          --force \
-          --color "$LABEL_COLOR" \
-          --description "Version tags have been pushed to this Docker repository"
-        gh pr edit "${{ steps.release_pr.outputs.pr-number }}" --add-label "$LABEL"
-        gh pr comment "${{ steps.release_pr.outputs.pr-number }}" \
-        --body "The following Docker tags have been created:
-        * $DOCKER_IMAGE:${{ inputs.version }}
-        * $DOCKER_IMAGE:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
-        * $DOCKER_IMAGE:${{ steps.semver.outputs.major }}"
+        gh api \
+          "/repos/${{ github.repository }}/labels" \
+          -f name="$LABEL" \
+          -f color="$LABEL_COLOR" \
+          -f description="Version tags have been pushed to this Docker repository" || true
+        gh api \
+          "/repos/${{ github.repository }}/issues/${{ steps.release_pr.outputs.pr-number }}/labels" \
+          -X POST \
+          -f 'labels[]'="$LABEL"
+        gh api "/repos/${{ github.repository }}/issues/${{ steps.release_pr.outputs.pr-number }}/comments" \
+          -XPOST \
+          -f body="The following Docker tags have been created:
+             * $DOCKER_IMAGE:${{ inputs.version }}
+             * $DOCKER_IMAGE:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
+             * $DOCKER_IMAGE:${{ steps.semver.outputs.major }}"
