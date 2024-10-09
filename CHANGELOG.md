@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.3](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.6.2...v0.6.3) (2024-10-09)
+
+
+### Bug Fixes
+
+* Didn't exit properly on failure to extract PR info ([d9500eb](https://github.com/jacobsvante/version-tag-docker-image/commit/d9500eb709b4fd8d7e0f9aaabacf8ad2c562a8f6))
+
 ## [0.6.2](https://github.com/jacobsvante/version-tag-docker-image/compare/v0.6.1...v0.6.2) (2024-10-09)
 
 
